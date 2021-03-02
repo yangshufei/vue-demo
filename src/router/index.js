@@ -22,6 +22,11 @@ const routes = [
     path: '/map',
     name: 'Map',
     component: () => import('../views/map/index.vue')
+  },
+  {
+    path: '/drag-table',
+    name: 'drag-table',
+    component: () => import('../views/dragTable/index.vue')
   }
 ]
 

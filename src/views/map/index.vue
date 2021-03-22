@@ -43,7 +43,7 @@ export default {
     }
   },
   created () {
-    this.getAirlineNetWork()
+    // this.getAirlineNetWork()
   }
 }
 </script>

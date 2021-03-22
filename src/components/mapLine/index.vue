@@ -34,6 +34,8 @@
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import './MovingMarker.js'
+import 'leaflet.tools.measure/src/L.Control.measure.js'
+import 'leaflet.tools.measure/src/L.Control.measure.css'
 
 export default {
   name: 'MapLine',
@@ -225,7 +227,8 @@ export default {
         minZoom: this.minZoom,
         maxZoom: this.maxZoom,
         zoomControl: this.zoomControl,
-        attributionControl: this.attributionControl
+        attributionControl: this.attributionControl,
+        measureControl: true // 初始化传入参数measureControl
       })
       this.map = map
       L.tileLayer(this.mapUrl.light).addTo(map)

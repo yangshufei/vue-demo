@@ -27,6 +27,11 @@ const routes = [
     path: '/drag-table',
     name: 'drag-table',
     component: () => import('../views/dragTable/index.vue')
+  },
+  {
+    path: '/svg-table',
+    name: 'svg-table',
+    component: () => import('../views/svg-table/index.vue')
   }
 ]
 

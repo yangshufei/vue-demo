@@ -1,32 +1,38 @@
 <template>
-<div class="svg-chart-wrapper">
-  <el-table :data="tableData" stripe>
-    <el-table-column  prop="time"  label="日期"  width="100px" align="center" fixed="left"></el-table-column>
-    <el-table-column v-for="(item, index) in headList" :key="index" :prop="item.prop" :label="item.label" width="100px" align="center">
-      <template slot-scope="{row}">
-        <div style="background:#5ADF96;color:black;width:100%;fontSize:14px;">{{row[item.prop]}}</div>
-        <div style="background:#eee;color:#bbb;width:100%;">{{row[item.prop]}}</div>
-      </template>
-    </el-table-column>
-  </el-table>
-  <svg width="100%" height="100%" id="svg-id" class="svg-icon" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
-    <g v-for="(item, index) in tableData" :key="index">
-      <defs v-if="item.dPath">
-          <marker id="triangle" markerUnits="strokeWidth" markerWidth="5" markerHeight="4" refX="0" refY="2" orient="auto" fill="#11BF92">
-              <path d="M 0 0 L 5 2 L 0 4 z" />
-          </marker>
-      </defs>
-      <path :id="'path'+index" v-if="item.dPath" :d="item.dPath" stroke="#11BF92" stroke-width="2" fill="none" style="marker-end: url(#triangle);" />
+<div class="svg-table">
+  <el-button type="primary" @click="canvasHandle">下载</el-button>
 
-      <text :id="'text'+index" font-size="14" text-anchor="middle" :rotate="tableData[index+1] && tableData[index+1].isDown ? '180': '0'" fill="red">
-        <textPath :xlink:href="'#path'+index" startOffset="50%">转</textPath>
-      </text>
-    </g>
-  </svg>
+  <div class="svg-chart-wrapper" ref="svgChartRef">
+    <el-table :data="tableData" stripe>
+      <el-table-column  prop="time"  label="日期"  width="100px" align="center" fixed="left"></el-table-column>
+      <el-table-column v-for="(item, index) in headList" :key="index" :prop="item.prop" :label="item.label" width="100px" align="center">
+        <template slot-scope="{row}">
+          <div style="background:#5ADF96;color:black;width:100%;fontSize:14px;">{{row[item.prop]}}</div>
+          <div style="background:#eee;color:#bbb;width:100%;">{{row[item.prop]}}</div>
+        </template>
+      </el-table-column>
+    </el-table>
+    <svg width="100%" height="100%" id="svg-id" class="svg-icon" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
+      <g v-for="(item, index) in tableData" :key="index">
+        <defs v-if="item.dPath">
+            <marker id="triangle" markerUnits="strokeWidth" markerWidth="5" markerHeight="4" refX="0" refY="2" orient="auto" fill="#11BF92">
+                <path d="M 0 0 L 5 2 L 0 4 z" />
+            </marker>
+        </defs>
+        <path :id="'path'+index" v-if="item.dPath" :d="item.dPath" stroke="#11BF92" stroke-width="2" fill="none" style="marker-end: url(#triangle);" />
+
+        <text :id="'text'+index" font-size="14" text-anchor="middle" :rotate="tableData[index+1] && tableData[index+1].isDown ? '180': '0'" fill="red">
+          <textPath :xlink:href="'#path'+index" startOffset="50%">转</textPath>
+        </text>
+      </g>
+    </svg>
+  </div>
 </div>
+
 </template>
 
 <script>
+import html2canvas from 'html2canvas'
 const map = {
   SS: 200,
   FR: 300,
@@ -94,6 +100,50 @@ export default {
         tableData[i].dPath = `M ${index}  ${baseHeight + i * rowHeight} L ${nextIndex - 50}  ${baseHeight + i * rowHeight} L ${nextIndex - 50}  ${firstHeight + i * rowHeight}`
       }
     }
+  },
+  methods: {
+    canvasHandle () {
+      html2canvas(this.$refs.svgChartRef,
+        {
+          useCORS: true,
+          backgroundColor: null
+        }).then(canvas => {
+        var base64Url = canvas.toDataURL('image/jpg')
+        // 第一步：将dataUrl转换成Blob
+        const blob = this.base64ToBlob(base64Url)
+        this.saveFile(blob)
+      })
+    },
+    // base64转换成blob数据
+    base64ToBlob (base64Url, type) {
+      var arr = base64Url.split(',')
+      var mime = arr[0].match(/:(.*?);/)[1] || type
+      // 去掉url的头，并转化为byte
+      var bytes = window.atob(arr[1])
+      // 处理异常,将ascii码小于0的转换为大于0
+      var ab = new ArrayBuffer(bytes.length)
+      // 生成视图（直接针对内存）：8位无符号整数，长度1个字节
+      var ia = new Uint8Array(ab)
+      for (var i = 0; i < bytes.length; i++) {
+        ia[i] = bytes.charCodeAt(i)
+      }
+      return new Blob([ab], {
+        type: mime
+      })
+    },
+
+    // downLoad
+    saveFile (blob) {
+      const link = document.createElement('a')
+      const url = window.URL.createObjectURL(blob)
+      link.download = 'svg-table'
+      link.href = url
+      document.body.appendChild(link)
+      link.click()
+      window.URL.revokeObjectURL(url)
+      link.remove()
+    }
+
   }
 }
 </script>

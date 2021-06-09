@@ -32,6 +32,11 @@ const routes = [
     path: '/svg-table',
     name: 'svg-table',
     component: () => import('../views/svg-table/index.vue')
+  },
+  {
+    path: '/canvas-dragon',
+    name: 'canvas-dragon',
+    component: () => import('../views/canvas-dragon/index.vue')
   }
 ]
 

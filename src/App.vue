@@ -5,7 +5,8 @@
       <router-link to="/about">About</router-link> |
       <router-link to="/Map">leaflet地图</router-link> |
       <router-link to="/drag-table">drag-table</router-link> |
-      <router-link to="/svg-table">svg-table</router-link>
+      <router-link to="/svg-table">svg-table</router-link> |
+      <router-link to="/canvas-dragon">canvas-dragon</router-link>
     </div>
     <router-view/>
   </div>

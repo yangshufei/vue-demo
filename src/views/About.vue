@@ -14,12 +14,11 @@ export default {
   },
   methods: {
     handleOption (data) {
-      console.log(data)
       const option = {
         xAxis: {},
         yAxis: {},
         series: [{
-          symbolSize: 20,
+          symbolSize: 3,
           data,
           type: 'scatter'
         }]
@@ -33,7 +32,7 @@ export default {
       return new Promise((resolve, reject) => {
         const arr = []
         for (let i = 0; i < 5000; i++) {
-          arr.push([i, i * this.count])
+          arr.push([i * 10, i * this.count])
         }
         setTimeout(() => {
           resolve(arr)
@@ -42,9 +41,12 @@ export default {
     },
     search () {
       this.getData().then((arr) => {
-        this.chartData.push(...arr)
-        const r = JSON.parse(JSON.stringify(this.chartData))
-        this.handleOption(r)
+        console.log(this.myChart.appendData)
+        this.myChart.appendData({
+          seriesIndex: 0,
+          data: arr
+        })
+        this.myChart.resize()
         this.count++
         if (this.count <= 10) {
           this.search()
@@ -55,6 +57,7 @@ export default {
   mounted () {
     var chartDom = document.getElementById('main')
     this.myChart = echarts.init(chartDom)
+    this.handleOption([])
     this.search()
   }
 }

@@ -37,6 +37,11 @@ const routes = [
     path: '/canvas-dragon',
     name: 'canvas-dragon',
     component: () => import('../views/canvas-dragon/index.vue')
+  },
+  {
+    path: '/scroll-table',
+    name: 'scroll-table',
+    component: () => import('../views/scroll-table/index.vue')
   }
 ]
 
